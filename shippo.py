@@ -2,13 +2,20 @@
 
 import socket
 
-TCP_IP = '127.0.0.1'
-TCP_PORT = 9000
+ASCII_ENCODING = 'ascii'
 BUFFER_SIZE = 1024
-PROTOCOL_HELO_COMMAND = "HELO\n".encode('ascii')
+BYTES_SENT_FORMAT = "B sent."
+ERROR_FAILED_SEND_HELO_COMMAND = \
+    "ERROR: Failed to send HELO command to the server."
+ERROR_FAILED_SEND_QUIT_COMMAND = \
+    "ERROR: Failed to send QUIT command to the server."
 EXIT_FAILURE = -1
 EXIT_SUCCESS = 0
-
+PROTOCOL_HELO_COMMAND = "HELO\n".encode(ASCII_ENCODING)
+PROTOCOL_QUIT_COMMAND = "QUIT\n".encode(ASCII_ENCODING)
+TCP_IP = '127.0.0.1'
+TCP_PORT = 9000
+SERVER_DATA_FORMAT = "S: {}"
 
 def DoConnect(clientSocket):
     result = False
@@ -43,14 +50,33 @@ def main():
         exit(EXIT_FAILURE)
     bytesSent = DoSend(clientSocket, PROTOCOL_HELO_COMMAND)
     if bytesSent == 0:
-        print("ERROR: Failed to send HELO command to the server.")
+        print(ERROR_FAILED_SEND_HELO_COMMAND)
+        clientSocket.close()
         exit(EXIT_FAILURE)
         
-    print(bytesSent, " B sent.")
-    receivedData = clientSocket.recv(BUFFER_SIZE)
-    clientSocket.close()
-
-    print("received data:", receivedData)
+    print(bytesSent, BYTES_SENT_FORMAT)
+    receivedData = clientSocket.recv(BUFFER_SIZE).decode(ASCII_ENCODING).strip()
+    receivedDataLen = len(receivedData)
+    
+    print(SERVER_DATA_FORMAT.format(
+        receivedDataLen, 
+        receivedData))
+    
+    bytesSent = DoSend(clientSocket, PROTOCOL_QUIT_COMMAND)
+    if bytesSent == 0:
+        print(ERROR_FAILED_SEND_QUIT_COMMAND)
+        clientSocket.close()
+        exit(EXIT_FAILURE)
+    
+    print(bytesSent, BYTES_SENT_FORMAT)
+    receivedData = clientSocket.recv(BUFFER_SIZE).decode(ASCII_ENCODING).strip()
+    receivedDataLen = len(receivedData)
+    
+    print(SERVER_DATA_FORMAT.format( 
+        receivedDataLen, 
+        receivedData))
+    
+    clientSocket.close()        
     exit(EXIT_SUCCESS)
 
     
