@@ -5,7 +5,10 @@ import socket
 
 
 class SocketWrapper(object):
-
+    '''
+    This class wraps the commonly-used functionality of a socket.
+    A context manager is also used.
+    '''
     def __DoReceive(self):
         strReply = ''
         if self.__clientSocket is None:
@@ -93,6 +96,9 @@ class SocketWrapper(object):
         self.Connect(self.__hostname, self.__port)
         return self
     
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, tb):
+        self.__exc_type = exc_type
+        self.__exc_value = exc_value
+        self.__tb = tb
         self.Close()
-        return self
+        return True
