@@ -2,7 +2,7 @@
 
 from common.utilities import Utilities
 from comm.socket_wrapper import SocketWrapper
-from shippo_symbols import TCP_IP, TCP_PORT, \
+from common.shippo_symbols import TCP_IP, TCP_PORT, \
     PROTOCOL_HELO_COMMAND, PROTOCOL_QUIT_COMMAND, EXIT_SUCCESS
 
 

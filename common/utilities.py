@@ -1,4 +1,4 @@
-from shippo_symbols import SERVER_DATA_FORMAT, CLIENT_DATA_FORMAT
+from common.shippo_symbols import SERVER_DATA_FORMAT, CLIENT_DATA_FORMAT
 
 
 class Utilities(object):
