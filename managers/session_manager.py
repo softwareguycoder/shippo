@@ -2,7 +2,7 @@ from comm.socket_wrapper import SocketWrapper
 from common.shippo_symbols import PROTOCOL_HELO_COMMAND, PROTOCOL_QUIT_COMMAND
 from common.utilities import Utilities
 
-class ConnectionManager(object):
+class SessionManager(object):
     def Open(self):
         if not self.__session:
             return False
