@@ -7,18 +7,15 @@ from common.shippo_symbols import TCP_IP, TCP_PORT, \
 
 
 def main():
-    clientSocket = SocketWrapper()
-    clientSocket.Connect(TCP_IP, TCP_PORT)
+    with SocketWrapper(TCP_IP, TCP_PORT) as clientConn:
+        clientConn.Send(PROTOCOL_HELO_COMMAND)
+        Utilities.PrintTheStuffTheClientSent(PROTOCOL_HELO_COMMAND)        
+        Utilities.PrintTheStuffTheServerRepliedWith(clientConn.Receive())
     
-    clientSocket.Send(PROTOCOL_HELO_COMMAND)
-    Utilities.PrintTheStuffTheClientSent(PROTOCOL_HELO_COMMAND)        
-    Utilities.PrintTheStuffTheServerRepliedWith(clientSocket.Receive())
+        clientConn.Send(PROTOCOL_QUIT_COMMAND)
+        Utilities.PrintTheStuffTheClientSent(PROTOCOL_QUIT_COMMAND)        
+        Utilities.PrintTheStuffTheServerRepliedWith(clientConn.Receive())
     
-    clientSocket.Send(PROTOCOL_QUIT_COMMAND)
-    Utilities.PrintTheStuffTheClientSent(PROTOCOL_QUIT_COMMAND)        
-    Utilities.PrintTheStuffTheServerRepliedWith(clientSocket.Receive())
-    
-    clientSocket.Close()        
     exit(EXIT_SUCCESS)
 
     

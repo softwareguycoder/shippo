@@ -82,6 +82,15 @@ class SocketWrapper(object):
             exit(EXIT_FAILURE)
         pass
 
-    def __init__(self):
+    def __init__(self, hostname, port):
+        self.__hostname = hostname
+        self.__port = port
         self.__clientSocket = \
             socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
+    def __enter__(self):
+        self.Connect(self.__hostname, self.__port)
+        return self
+    
+    def __exit__(self):
+        self.Close()
