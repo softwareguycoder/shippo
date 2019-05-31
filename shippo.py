@@ -17,6 +17,7 @@ TCP_IP = '127.0.0.1'
 TCP_PORT = 9000
 SERVER_DATA_FORMAT = "S: {}"
 
+
 def DoConnect(clientSocket):
     result = False
     if clientSocket is None:
@@ -59,7 +60,7 @@ def main():
     receivedDataLen = len(receivedData)
     
     print(SERVER_DATA_FORMAT.format(
-        receivedDataLen, 
+        receivedDataLen,
         receivedData))
     
     bytesSent = DoSend(clientSocket, PROTOCOL_QUIT_COMMAND)
@@ -72,8 +73,8 @@ def main():
     receivedData = clientSocket.recv(BUFFER_SIZE).decode(ASCII_ENCODING).strip()
     receivedDataLen = len(receivedData)
     
-    print(SERVER_DATA_FORMAT.format( 
-        receivedDataLen, 
+    print(SERVER_DATA_FORMAT.format(
+        receivedDataLen,
         receivedData))
     
     clientSocket.close()        
