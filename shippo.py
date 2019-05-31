@@ -5,6 +5,7 @@ from common.shippo_symbols import TCP_IP, TCP_PORT, EXIT_SUCCESS
 def main():
     with SessionManager(TCP_IP, TCP_PORT) as session:
         session.Open()
+        session.ListRemoteProcesses()
     
     exit(EXIT_SUCCESS)
 

@@ -1,26 +1,31 @@
 from common.shippo_symbols import ERROR_FAILED_CONNECT_TO_SERVER_FORMAT, \
     EXIT_FAILURE, ASCII_ENCODING, ERROR_FAILED_SEND_MESSAGE_FORMAT, \
-    BUFFER_SIZE, ERROR_FAILED_RECEIVE_FROM_SERVER_FORMAT
+    LF, MULTILINE_DATA_TERMINATOR
 import socket
 
 
 class SocketWrapper(object):
     '''
     This class wraps the commonly-used functionality of a socket.
-    A context manager is also used.
+    A context manager is also used so this object can be used in a 
+    with statement.
     '''
+
     def __DoReceive(self):
         strReply = ''
-        if self.__clientSocket is None:
+        if not self.__clientSocket:
             return strReply
-        try:
-            strReply = self.__clientSocket.recv(BUFFER_SIZE) \
-                .decode(ASCII_ENCODING).strip()
-        except Exception as e:
-            print(ERROR_FAILED_RECEIVE_FROM_SERVER_FORMAT.format(e))
-            strReply = ''
-        
-        return strReply
+        while True:
+            c = ''
+            try:
+                c = self.__clientSocket.recv(1).decode(ASCII_ENCODING)
+                strReply += c
+            except:
+                pass
+            if c == LF or c == '':
+                break
+            
+        return strReply.strip()
        
     def __DoSend(self, bytesToSend):
         result = 0  # bytes sent
@@ -51,6 +56,18 @@ class SocketWrapper(object):
             
         return result
     
+    def ReceiveAllLines(self):
+        reecivedLines = []
+        if not self.__clientSocket:
+            return reecivedLines
+        strCurLine = self.__DoReceive()
+        while len(strCurLine) > 0 \
+            and strCurLine != MULTILINE_DATA_TERMINATOR:
+                reecivedLines.append(strCurLine)
+                strCurLine = self.__DoReceive()
+                
+        return reecivedLines
+    
     def Receive(self):
         strReply = self.__DoReceive()
         if len(strReply.strip()) == 0:
@@ -67,7 +84,7 @@ class SocketWrapper(object):
         if bytesSent <= 0:
             self.Close()
             print(ERROR_FAILED_SEND_MESSAGE_FORMAT.
-                  format(strMessage))
+                  format(strMessage.strip()))
             exit(EXIT_FAILURE)
             
         return bytesSent
