@@ -50,8 +50,9 @@ class Prompter(object):
             if theResult is None:
                 theResult = nDefault
             return theResult
-        except: #parse error more likely
-            invalidInputHandler()
         except KeyboardInterrupt as e:
             raise e
+        except: #parse error more likely
+            if invalidInputHandler is not None:
+                invalidInputHandler()
         
