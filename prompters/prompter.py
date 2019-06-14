@@ -28,11 +28,11 @@ class Prompter(object):
             raise e
     
     @staticmethod
-    def PromptForString(strPrompt, strDefault, strChoiceValueSet='', 
+    def PromptForString(strPrompt, strDefault, choiceValueSet=[], 
                         inputValidator=None, invalidInputHandler=None):
         try:
             theResult = Prompter.__DoDisplayPrompt(strPrompt, strDefault, 
-                strChoiceValueSet, inputValidator, invalidInputHandler)
+                choiceValueSet, inputValidator, invalidInputHandler)
             if theResult is None or not len(theResult.strip()):
                 theResult = strDefault
             return theResult
