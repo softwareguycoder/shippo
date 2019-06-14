@@ -2,8 +2,8 @@
 from prompters.prompter import Prompter
 
 def main():
-    theName = Prompter.PromptForString("Enter your name", "Brian", 
-        ['Suzy', 'Bob', 'Greg', 'Brian'])
+    theName = Prompter.PromptForString(strPrompt="Enter your name", 
+        strDefault="Brian", choiceValueSet=['Suzy', 'Bob', 'Greg', 'Brian'])
     print("Entered name:", theName)
     pass
     

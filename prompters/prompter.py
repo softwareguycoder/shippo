@@ -5,19 +5,21 @@ PROMPT_FORMAT = "> {} ({})[{}]: > "
 
 class Prompter(object):    
     @staticmethod
-    def __DoDisplayPrompt(strPrompt, pvDefault, choiceValueSet=[], 
+    def __DoDisplayPrompt(strPrompt, pvDefault=None, choiceValueSet=[], 
                         inputValidator=None, invalidInputHandler=None):
+        global PROMPT_FORMAT
         try:
             if StringUtilities.IsNullOrWhiteSpace(strPrompt):
                 return pvDefault
             strPromptFormat = PROMPT_FORMAT
-            if StringUtilities.IsNullOrWhiteSpace(pvDefault):
+            if pvDefault is None or \
+                StringUtilities.IsNullOrWhiteSpace(pvDefault):
                 strPromptFormat = strPromptFormat.replace("[{}]", '')
             if not len(choiceValueSet):
                 strPromptFormat = strPromptFormat.replace("({})", '')
-            strDisplayedPrompt = strPromptFormat.format(
-                strPrompt, pvDefault. ListUtilities.FormatEltsSeparatedBy(
-                    '/', choiceValueSet))
+            strDisplayedPrompt = strPromptFormat.format(strPrompt, pvDefault,
+                ListUtilities.FormatEltsSeparatedBy(
+                '/', choiceValueSet))
             theResult = input(strDisplayedPrompt)
             if inputValidator is not None:
                 if not inputValidator(theResult, choiceValueSet):
