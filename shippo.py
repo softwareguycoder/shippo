@@ -62,10 +62,14 @@ class TheApp(object):
 #         else:
 #             print("Save operation cancelled.")
         
-        choice = Prompter.PromptForInt(strPrompt="Menu choice", 
-            nDefault=None, choiceValueSet=[1,2,3,4],
-                 keyboardInterruptHandler=TheApp.ExitInstance)
-        print("The user chose choice:", choice)
+#         choice = Prompter.PromptForInt(strPrompt="Menu choice", 
+#             nDefault=None, choiceValueSet=[1,2,3,4],
+#                  keyboardInterruptHandler=TheApp.ExitInstance)
+#         print("The user chose choice:", choice)
+
+        Prompter.PressAnyKeyToContinue(
+            strPrompt="Press ENTER key to continue",
+            keyboardInterruptHandler=TheApp.ExitInstance)
         
         pass
     

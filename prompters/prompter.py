@@ -21,6 +21,9 @@ class Prompter(object):
             strPromptFormat = strPromptFormat.replace("[{}]", '')
         if not len(choiceValueSet):
             strPromptFormat = strPromptFormat.replace("({})", '')
+        if not "[{}]" in strPromptFormat \
+            and not "({})" in strPromptFormat:
+            strPromptFormat = strPromptFormat.replace(" :", ":")
         if pvDefault is None:
             if not len(choiceValueSet):
                 strDisplayedPrompt = strPromptFormat.format(strPrompt)
@@ -56,6 +59,8 @@ class Prompter(object):
                     choiceValueSet))
             if not theResult:
                 theResult = pvDefault
+            if theResult is None:
+                return theResult
             if inputValidator is not None:
                 if not inputValidator(theResult, choiceValueSet) \
                     and invalidInputHandler is not None:
@@ -78,7 +83,7 @@ class Prompter(object):
                 keyboardInterruptHandler() 
     
     @staticmethod
-    def PromptForString(strPrompt, strDefault, choiceValueSet=[], 
+    def PromptForString(strPrompt, strDefault=None, choiceValueSet=[], 
                         keyboardInterruptHandler=None, inputValidator=None, 
                         invalidInputHandler=None):
         theResult = Prompter.__DoDisplayPrompt(strPrompt, strDefault, 
@@ -118,6 +123,13 @@ class Prompter(object):
                     theResult = nInvalidValue
                 else:
                     return nInvalidValue
+    
+    @staticmethod
+    def PressAnyKeyToContinue(strPrompt="Press ENTER key to continue:",
+        keyboardInterruptHandler=None):
+        _ = Prompter.PromptForString(strPrompt, 
+            keyboardInterruptHandler=keyboardInterruptHandler)
+        pass
     
     @staticmethod
     def __YesNoValidator(theResult, choiceValueSet):  # @UnusedVariable
