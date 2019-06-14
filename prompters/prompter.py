@@ -38,11 +38,15 @@ class Prompter(object):
                     '/', choiceValueSet), pvDefault)                
         return strDisplayedPrompt
 
+    @staticmethod
+    def __IsChoiceNotInValueSet(theResult, choiceValueSet=[]):
+        return str(theResult) not in map(str, choiceValueSet)
     
     @staticmethod
     def __DoDisplayPrompt(strPrompt, pvDefault=None, choiceValueSet=[], 
                         keyboardInterruptHandler=None, inputValidator=None, 
-                        invalidInputHandler=None, pvInvalidValue=None):
+                        invalidInputHandler=None, invalidChoiceHandler=None,
+                        pvInvalidValue=None):
         global PROMPT_FORMAT
         try:
             if StringUtilities.IsNullOrWhiteSpace(strPrompt):
@@ -52,13 +56,22 @@ class Prompter(object):
                     choiceValueSet))
             if not theResult:
                 theResult = pvDefault
-            if not choiceValueSet \
-                or str(theResult) not in map(str, choiceValueSet):
-                if inputValidator is not None:
-                    if not inputValidator(theResult, choiceValueSet) \
-                        and invalidInputHandler is not None:
-                        invalidInputHandler(theResult)
-                        return pvInvalidValue
+            if inputValidator is not None:
+                if not inputValidator(theResult, choiceValueSet) \
+                    and invalidInputHandler is not None:
+                    invalidInputHandler(theResult)
+                    return pvInvalidValue
+            elif Prompter.__IsChoiceNotInValueSet(
+                theResult, choiceValueSet):
+                strChoiceDisplay = ListUtilities.FormatEltsSeparatedBy(
+                    ", ", choiceValueSet);
+                strChoiceDisplay = StringUtilities.ReplaceFromRight(strChoiceDisplay, 
+                    ", ", ", or ", 1)
+                if not invalidChoiceHandler:
+                    print("ERROR: Please choose {}.".format(strChoiceDisplay))
+                else:
+                    invalidChoiceHandler(theResult)
+                return pvInvalidValue
             return theResult
         except KeyboardInterrupt:
             if keyboardInterruptHandler is not None:
@@ -78,15 +91,22 @@ class Prompter(object):
     @staticmethod
     def PromptForInt(strPrompt, nDefault, choiceValueSet=[],
         keyboardInterruptHandler=None, inputValidator=None, 
-        invalidInputHandler=None, nInvalidValue=0):
+        invalidInputHandler=None, invalidChoiceHandler=None,
+        nInvalidValue=0):
         theResult = nInvalidValue
         while theResult == nInvalidValue:
             try:
                 theResult = int(
                     Prompter.__DoDisplayPrompt(strPrompt, nDefault, 
-                    choiceValueSet, keyboardInterruptHandler,
-                    inputValidator, invalidInputHandler, nInvalidValue)
+                    choiceValueSet=choiceValueSet, 
+                    keyboardInterruptHandler=keyboardInterruptHandler,
+                    inputValidator=inputValidator, 
+                    invalidInputHandler=invalidInputHandler,
+                    invalidChoiceHandler=invalidChoiceHandler, 
+                    pvInvalidValue=nInvalidValue)
                     )
+                if theResult == nInvalidValue:
+                    continue
                 if theResult is None:
                     theResult = nDefault
                 return theResult
