@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from prompters.prompter import Prompter
-from common.inuyasha_symbols import EXIT_FAILURE
+from common.inuyasha_symbols import EXIT_FAILURE, EXIT_SUCCESS
 import os
 
 class TheApp(object):
@@ -24,10 +24,18 @@ class TheApp(object):
             return False
         return int(theResult) >= 1024 and int(theResult) <= 49151
     import sys
+
     @staticmethod
-    def ExitInstance():
+    def Foo():
+        print("In foo")
+
+    @staticmethod
+    def ExitInstance(message, nExitCode, exitRoutine=None):
+        print(message)
         print("\nBlaaaaarrrrgggghhhh!!!! I'm dead! *plop*")
-        os._exit(EXIT_FAILURE)
+        if exitRoutine is not None:
+            exitRoutine()
+        os._exit(nExitCode)
         pass    
         
     @staticmethod
@@ -69,7 +77,8 @@ class TheApp(object):
 
         Prompter.PressAnyKeyToContinue(
             strPrompt="Press ENTER key to continue",
-            keyboardInterruptHandler=TheApp.ExitInstance)
+            keyboardInterruptHandler=lambda: TheApp.ExitInstance("\nyay", EXIT_SUCCESS,
+                                                                 exitRoutine=TheApp.Foo))
         
         pass
     
